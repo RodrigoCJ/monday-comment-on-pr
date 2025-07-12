@@ -37,7 +37,7 @@ async function run(): Promise<void> {
     `;
 
     const variables = {
-      itemId: activityId,
+      item_id: activityId,
       body: content,
     };
 

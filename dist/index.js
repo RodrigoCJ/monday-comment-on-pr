@@ -23919,7 +23919,7 @@ Mais informa\xE7\xF5es no GitHub: ${pull_request.html_url}`;
       }
     `;
     const variables = {
-      itemId: activityId,
+      item_id: activityId,
       body: content
     };
     const response = await fetch("https://api.monday.com/v2", {
