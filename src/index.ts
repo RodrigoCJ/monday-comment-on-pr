@@ -27,11 +27,12 @@ async function run(): Promise<void> {
   try {
     const userName = await getName(pull_request.user.login);
     const content = `Comentário criado por: ${userName} a partir de um Pull-Request via API  \n${mondayComment}\nMais informações no GitHub: ${pull_request.html_url}`;
+    console.log("body", JSON.stringify(content.replace(/"/g, '\\"')));
     const mutation = `
       mutation {
         create_update(
           item_id: ${activityId},
-          body: "${content.replace(/"/g, '\\"')}"
+          body: "${JSON.stringify(content.replace(/"/g, '\\"'))}"
         ) {
           id
         }
