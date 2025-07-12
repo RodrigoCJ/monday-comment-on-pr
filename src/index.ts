@@ -28,8 +28,8 @@ async function run(): Promise<void> {
     const userName = await getName(pull_request.user.login);
     const content = `Comentário criado por: ${userName} a partir de um Pull-Request via API\n\n${mondayComment}\n\nMais informações no GitHub: ${pull_request.html_url}`;
 
-    const query = `
-      mutation CreateUpdate($itemId: Int!, $body: String!) {
+    const mutation = `
+      mutation($itemId: ID!, $body: String!) {
         create_update(item_id: $itemId, body: $body) {
           id
         }
@@ -37,7 +37,7 @@ async function run(): Promise<void> {
     `;
 
     const variables = {
-      item_id: activityId,
+      itemId: activityId,
       body: content,
     };
 
@@ -47,7 +47,7 @@ async function run(): Promise<void> {
         "Content-Type": "application/json",
         Authorization: apiKey,
       },
-      body: JSON.stringify({ query, variables }),
+      body: JSON.stringify({ query: mutation, variables }),
     });
 
     const result = await response.json();

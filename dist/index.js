@@ -23911,15 +23911,15 @@ async function run() {
 ${mondayComment}
 
 Mais informa\xE7\xF5es no GitHub: ${pull_request.html_url}`;
-    const query = `
-      mutation CreateUpdate($itemId: Int!, $body: String!) {
+    const mutation = `
+      mutation($itemId: ID!, $body: String!) {
         create_update(item_id: $itemId, body: $body) {
           id
         }
       }
     `;
     const variables = {
-      item_id: activityId,
+      itemId: activityId,
       body: content
     };
     const response = await fetch("https://api.monday.com/v2", {
@@ -23928,7 +23928,7 @@ Mais informa\xE7\xF5es no GitHub: ${pull_request.html_url}`;
         "Content-Type": "application/json",
         Authorization: apiKey
       },
-      body: JSON.stringify({ query, variables })
+      body: JSON.stringify({ query: mutation, variables })
     });
     const result = await response.json();
     console.log(JSON.stringify(result, null, 2));
