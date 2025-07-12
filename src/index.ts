@@ -37,7 +37,7 @@ async function run(): Promise<void> {
     `;
 
     const variables = {
-      itemId: parseInt(activityId, 10),
+      itemId: activityId,
       body: content,
     };
 
