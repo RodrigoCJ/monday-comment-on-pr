@@ -23909,11 +23909,12 @@ async function run() {
     const content = `Coment\xE1rio criado por: ${userName} a partir de um Pull-Request via API  
 ${mondayComment}
 Mais informa\xE7\xF5es no GitHub: ${pull_request.html_url}`;
+    console.log("body", JSON.stringify(content.replace(/"/g, '\\"')));
     const mutation = `
       mutation {
         create_update(
           item_id: ${activityId},
-          body: "${content.replace(/"/g, '\\"')}"
+          body: "${JSON.stringify(content.replace(/"/g, '\\"'))}"
         ) {
           id
         }
