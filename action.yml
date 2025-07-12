@@ -1,0 +1,9 @@
+name: "Enviar comentário para Monday"
+description: "Envia comentários do PR como update para o Monday"
+inputs:
+  apiKey:
+    description: "Chave da API do Monday"
+    required: true
+runs:
+  using: "node20"
+  main: "dist/index.js
