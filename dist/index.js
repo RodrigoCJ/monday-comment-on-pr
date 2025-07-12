@@ -23914,7 +23914,7 @@ Mais informa\xE7\xF5es no GitHub: ${pull_request.html_url}`;
       mutation {
         create_update(
           item_id: ${activityId},
-          body: "${JSON.stringify(content.replace(/"/g, '\\"'))}"
+          body: "${JSON.stringify(content)}"
         ) {
           id
         }

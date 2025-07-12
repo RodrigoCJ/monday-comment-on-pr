@@ -32,7 +32,7 @@ async function run(): Promise<void> {
       mutation {
         create_update(
           item_id: ${activityId},
-          body: "${JSON.stringify(content.replace(/"/g, '\\"'))}"
+          body: "${JSON.stringify(content)}"
         ) {
           id
         }
