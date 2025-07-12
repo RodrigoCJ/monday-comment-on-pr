@@ -23906,28 +23906,29 @@ var mondayComment = pull_request.body.split("Start Monday Comment").pop().split(
 async function run() {
   try {
     const userName = await getName(pull_request.user.login);
-    const content = `Coment\xE1rio criado por: ${userName} a partir de um Pull-Request via API  
+    const content = `Coment\xE1rio criado por: ${userName} a partir de um Pull-Request via API
+
 ${mondayComment}
+
 Mais informa\xE7\xF5es no GitHub: ${pull_request.html_url}`;
-    console.log("body", JSON.stringify(content.replace(/"/g, '\\"')));
-    const mutation = `
-      mutation {
-        create_update(
-          item_id: ${activityId},
-          body: "${JSON.stringify(content)}"
-        ) {
+    const query = `
+      mutation CreateUpdate($itemId: Int!, $body: String!) {
+        create_update(item_id: $itemId, body: $body) {
           id
         }
       }
     `;
-    console.log("\n Content =>", content, "\n");
+    const variables = {
+      itemId: parseInt(activityId, 10),
+      body: content
+    };
     const response = await fetch("https://api.monday.com/v2", {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: apiKey
       },
-      body: JSON.stringify({ query: mutation })
+      body: JSON.stringify({ query, variables })
     });
     const result = await response.json();
     console.log(JSON.stringify(result, null, 2));
