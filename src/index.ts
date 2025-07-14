@@ -26,7 +26,7 @@ const mondayComment = pull_request.body
 async function run(): Promise<void> {
   try {
     const userName = await getName(pull_request.user.login);
-    const content = `Comentário criado por: **${userName}** a partir de um [Pull-Request](${pull_request.html_url}) via API\n\n${mondayComment}`;
+    const content = `Comentário criado por: <strong>${userName}</strong> a partir de um <a href=\"${pull_request.html_url}\" target=\"_blank\" rel=\"noopener noreferrer noopener noreferrer\">Pull Request</a> via API\n\n${mondayComment}`;
 
     const mutation = `
       mutation($itemId: ID!, $body: String!) {
