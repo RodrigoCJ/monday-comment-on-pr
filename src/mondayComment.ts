@@ -23,11 +23,9 @@ export async function generateMondayComment(
     return null;
   }
 
-  return `Comentário criado por: 
-  <strong>${userName}</strong> a partir de um 
-  <a href="${
+  return `Comentário criado por: <strong>${userName}</strong> a partir de um  <a 
+  href="${
     pullRequest.html_url
-  }" target="_blank" rel="noopener noreferrer">Pull Request</a> 
-  via API
+  }" target="_blank" rel="noopener noreferrer">Pull Request</a>  via API
   \n\n${marked(mondayComment)}`;
 }
