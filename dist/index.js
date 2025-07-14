@@ -25028,9 +25028,11 @@ var mondayComment = pull_request.body.split("Start Monday Comment").pop().split(
 async function run() {
   try {
     const userName = await getName(pull_request.user.login);
-    const content = `Coment\xE1rio criado por: <strong>${userName}</strong> a partir de um <a href="${k(pull_request.html_url)}" target="_blank" rel="noopener noreferrer noopener noreferrer">Pull Request</a> via API
+    const content = `Coment\xE1rio criado por: <strong>${userName}</strong> a partir de um <a href="${pull_request.html_url}" target="_blank" rel="noopener noreferrer noopener noreferrer">Pull Request</a> via API
 
-${mondayComment}`;
+${k(
+      mondayComment
+    )}`;
     const mutation = `
       mutation($itemId: ID!, $body: String!) {
         create_update(item_id: $itemId, body: $body) {
