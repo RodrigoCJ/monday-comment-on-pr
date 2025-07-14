@@ -25021,7 +25021,6 @@ var apiKey = core.getInput("apiKey");
 var payload = JSON.stringify(github.context.payload, void 0, 2);
 var objPayload = JSON.parse(payload);
 var pull_request = objPayload.pull_request;
-var html_pr = k(pull_request.html_url);
 var mondayURl = pull_request.body.split("Link da tarefa no Monday:[").pop().split("](").pop().split(")")[0];
 var match = mondayURl.match(/\/pulses\/(\d+)/);
 var activityId = match ? match[1] : "";
@@ -25029,7 +25028,7 @@ var mondayComment = pull_request.body.split("Start Monday Comment").pop().split(
 async function run() {
   try {
     const userName = await getName(pull_request.user.login);
-    const content = `Coment\xE1rio criado por: <strong>${userName}</strong> a partir de um <a href="${html_pr}" target="_blank" rel="noopener noreferrer noopener noreferrer">Pull Request</a> via API
+    const content = `Coment\xE1rio criado por: <strong>${userName}</strong> a partir de um <a href="${k(pull_request.html_url)}" target="_blank" rel="noopener noreferrer noopener noreferrer">Pull Request</a> via API
 
 ${mondayComment}`;
     const mutation = `
