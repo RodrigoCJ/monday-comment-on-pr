@@ -25023,10 +25023,8 @@ async function generateMondayComment(pullRequest) {
   if (!mondayComment) {
     return null;
   }
-  return `Coment\xE1rio criado por: 
-  <strong>${userName}</strong> a partir de um 
-  <a href="${pullRequest.html_url}" target="_blank" rel="noopener noreferrer">Pull Request</a> 
-  via API
+  return `Coment\xE1rio criado por: <strong>${userName}</strong> a partir de um  <a 
+  href="${pullRequest.html_url}" target="_blank" rel="noopener noreferrer">Pull Request</a>  via API
   
 
 ${k(mondayComment)}`;
