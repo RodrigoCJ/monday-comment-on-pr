@@ -25048,7 +25048,7 @@ async function run() {
     }
     const content = await generateMondayComment(pull_request);
     if (!content) {
-      core.info("Sem coment\xE1rio para enviar ao Monday");
+      core.info("Sem coment\xE1rio para enviar ao Monday ou estrutura incompleta");
       return;
     }
     const mutation = `
