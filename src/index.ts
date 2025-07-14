@@ -1,11 +1,13 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { getName } from "./useInfo";
+import { marked } from "marked";
 
 const apiKey = core.getInput("apiKey");
 const payload = JSON.stringify(github.context.payload, undefined, 2);
 const objPayload = JSON.parse(payload);
 const pull_request = objPayload.pull_request;
+const html_pr = marked(pull_request.html_url);
 
 const mondayURl = pull_request.body
   .split("Link da tarefa no Monday:[")
@@ -26,7 +28,7 @@ const mondayComment = pull_request.body
 async function run(): Promise<void> {
   try {
     const userName = await getName(pull_request.user.login);
-    const content = `Comentário criado por: <strong>${userName}</strong> a partir de um <a href=\"${pull_request.html_url}\" target=\"_blank\" rel=\"noopener noreferrer noopener noreferrer\">Pull Request</a> via API\n\n${mondayComment}`;
+    const content = `Comentário criado por: <strong>${userName}</strong> a partir de um <a href=\"${html_pr}\" target=\"_blank\" rel=\"noopener noreferrer noopener noreferrer\">Pull Request</a> via API\n\n${mondayComment}`;
 
     const mutation = `
       mutation($itemId: ID!, $body: String!) {
