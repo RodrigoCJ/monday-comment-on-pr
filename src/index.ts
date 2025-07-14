@@ -1,37 +1,40 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { getName } from "./useInfo";
-import { marked } from "marked";
+import { generateMondayComment } from "./mondayComment";
 
 const apiKey = core.getInput("apiKey");
 const payload = JSON.stringify(github.context.payload, undefined, 2);
 const objPayload = JSON.parse(payload);
 const pull_request = objPayload.pull_request;
 
-const mondayURl = pull_request.body
-  .split("Link da tarefa no Monday:[")
-  .pop()
-  .split("](")
-  .pop()
-  .split(")")[0];
-
-const match = mondayURl.match(/\/pulses\/(\d+)/);
-const activityId = match ? match[1] : "";
-
-const mondayComment = pull_request.body
-  .split("Start Monday Comment")
-  .pop()
-  .split("End Monday Comment")[0]
-  .trim();
-
 async function run(): Promise<void> {
   try {
-    const userName = await getName(pull_request.user.login);
-    const content = `Comentário criado por: <strong>${userName}</strong> a partir de um <a href=\"${
-      pull_request.html_url
-    }\" target=\"_blank\" rel=\"noopener noreferrer noopener noreferrer\">Pull Request</a> via API\n\n${marked(
-      mondayComment
-    )}`;
+    if (!pull_request.body) {
+      core.info("Sem body no pull-request");
+      return;
+    }
+
+    const mondayURl = pull_request.body
+      .split("Link da tarefa no Monday:[")
+      .pop()
+      .split("](")
+      .pop()
+      .split(")")[0];
+
+    const match = mondayURl.match(/\/pulses\/(\d+)/);
+    const activityId = match ? match[1] : "";
+
+    if (!activityId) {
+      core.info("Sem id da board do Monday para enviar");
+      return;
+    }
+
+    const content = await generateMondayComment(pull_request);
+
+    if (!content) {
+      core.info("Sem comentário para enviar ao Monday");
+      return;
+    }
 
     const mutation = `
       mutation($itemId: ID!, $body: String!) {

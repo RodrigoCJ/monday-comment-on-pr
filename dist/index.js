@@ -2502,8 +2502,8 @@ var require_parseParams = __commonJS({
       "%fF": "\xFF",
       "%FF": "\xFF"
     };
-    function encodedReplacer(match2) {
-      return EncodedLookup[match2];
+    function encodedReplacer(match) {
+      return EncodedLookup[match];
     }
     var STATE_KEY = 0;
     var STATE_VALUE = 1;
@@ -10320,15 +10320,15 @@ var require_mock_utils = __commonJS({
         isPromise
       }
     } = require("util");
-    function matchValue(match2, value) {
-      if (typeof match2 === "string") {
-        return match2 === value;
+    function matchValue(match, value) {
+      if (typeof match === "string") {
+        return match === value;
       }
-      if (match2 instanceof RegExp) {
-        return match2.test(value);
+      if (match instanceof RegExp) {
+        return match.test(value);
       }
-      if (typeof match2 === "function") {
-        return match2(value) === true;
+      if (typeof match === "function") {
+        return match(value) === true;
       }
       return false;
     }
@@ -17581,12 +17581,12 @@ var require_lib = __commonJS({
             throw new Error("Client has already been disposed.");
           }
           const parsedUrl = new URL(requestUrl);
-          let info = this._prepareRequest(verb, parsedUrl, headers);
+          let info2 = this._prepareRequest(verb, parsedUrl, headers);
           const maxTries = this._allowRetries && RetryableHttpVerbs.includes(verb) ? this._maxRetries + 1 : 1;
           let numTries = 0;
           let response;
           do {
-            response = yield this.requestRaw(info, data);
+            response = yield this.requestRaw(info2, data);
             if (response && response.message && response.message.statusCode === HttpCodes.Unauthorized) {
               let authenticationHandler;
               for (const handler of this.handlers) {
@@ -17596,7 +17596,7 @@ var require_lib = __commonJS({
                 }
               }
               if (authenticationHandler) {
-                return authenticationHandler.handleAuthentication(this, info, data);
+                return authenticationHandler.handleAuthentication(this, info2, data);
               } else {
                 return response;
               }
@@ -17619,8 +17619,8 @@ var require_lib = __commonJS({
                   }
                 }
               }
-              info = this._prepareRequest(verb, parsedRedirectUrl, headers);
-              response = yield this.requestRaw(info, data);
+              info2 = this._prepareRequest(verb, parsedRedirectUrl, headers);
+              response = yield this.requestRaw(info2, data);
               redirectsRemaining--;
             }
             if (!response.message.statusCode || !HttpResponseRetryCodes.includes(response.message.statusCode)) {
@@ -17649,7 +17649,7 @@ var require_lib = __commonJS({
        * @param info
        * @param data
        */
-      requestRaw(info, data) {
+      requestRaw(info2, data) {
         return __awaiter(this, void 0, void 0, function* () {
           return new Promise((resolve, reject) => {
             function callbackForResult(err, res) {
@@ -17661,7 +17661,7 @@ var require_lib = __commonJS({
                 resolve(res);
               }
             }
-            this.requestRawWithCallback(info, data, callbackForResult);
+            this.requestRawWithCallback(info2, data, callbackForResult);
           });
         });
       }
@@ -17671,12 +17671,12 @@ var require_lib = __commonJS({
        * @param data
        * @param onResult
        */
-      requestRawWithCallback(info, data, onResult) {
+      requestRawWithCallback(info2, data, onResult) {
         if (typeof data === "string") {
-          if (!info.options.headers) {
-            info.options.headers = {};
+          if (!info2.options.headers) {
+            info2.options.headers = {};
           }
-          info.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
+          info2.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
         }
         let callbackCalled = false;
         function handleResult(err, res) {
@@ -17685,7 +17685,7 @@ var require_lib = __commonJS({
             onResult(err, res);
           }
         }
-        const req = info.httpModule.request(info.options, (msg) => {
+        const req = info2.httpModule.request(info2.options, (msg) => {
           const res = new HttpClientResponse(msg);
           handleResult(void 0, res);
         });
@@ -17697,7 +17697,7 @@ var require_lib = __commonJS({
           if (socket) {
             socket.end();
           }
-          handleResult(new Error(`Request timeout: ${info.options.path}`));
+          handleResult(new Error(`Request timeout: ${info2.options.path}`));
         });
         req.on("error", function(err) {
           handleResult(err);
@@ -17733,27 +17733,27 @@ var require_lib = __commonJS({
         return this._getProxyAgentDispatcher(parsedUrl, proxyUrl);
       }
       _prepareRequest(method, requestUrl, headers) {
-        const info = {};
-        info.parsedUrl = requestUrl;
-        const usingSsl = info.parsedUrl.protocol === "https:";
-        info.httpModule = usingSsl ? https : http;
+        const info2 = {};
+        info2.parsedUrl = requestUrl;
+        const usingSsl = info2.parsedUrl.protocol === "https:";
+        info2.httpModule = usingSsl ? https : http;
         const defaultPort = usingSsl ? 443 : 80;
-        info.options = {};
-        info.options.host = info.parsedUrl.hostname;
-        info.options.port = info.parsedUrl.port ? parseInt(info.parsedUrl.port) : defaultPort;
-        info.options.path = (info.parsedUrl.pathname || "") + (info.parsedUrl.search || "");
-        info.options.method = method;
-        info.options.headers = this._mergeHeaders(headers);
+        info2.options = {};
+        info2.options.host = info2.parsedUrl.hostname;
+        info2.options.port = info2.parsedUrl.port ? parseInt(info2.parsedUrl.port) : defaultPort;
+        info2.options.path = (info2.parsedUrl.pathname || "") + (info2.parsedUrl.search || "");
+        info2.options.method = method;
+        info2.options.headers = this._mergeHeaders(headers);
         if (this.userAgent != null) {
-          info.options.headers["user-agent"] = this.userAgent;
+          info2.options.headers["user-agent"] = this.userAgent;
         }
-        info.options.agent = this._getAgent(info.parsedUrl);
+        info2.options.agent = this._getAgent(info2.parsedUrl);
         if (this.handlers) {
           for (const handler of this.handlers) {
-            handler.prepareRequest(info.options);
+            handler.prepareRequest(info2.options);
           }
         }
-        return info;
+        return info2;
       }
       _mergeHeaders(headers) {
         if (this.requestOptions && this.requestOptions.headers) {
@@ -19743,10 +19743,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       (0, command_1.issueCommand)("notice", (0, utils_1.toCommandProperties)(properties), message instanceof Error ? message.toString() : message);
     }
     exports2.notice = notice;
-    function info(message) {
+    function info2(message) {
       process.stdout.write(message + os.EOL);
     }
-    exports2.info = info;
+    exports2.info = info2;
     function startGroup(name) {
       (0, command_1.issue)("group", name);
     }
@@ -23881,19 +23881,6 @@ var require_github = __commonJS({
 var core = __toESM(require_core());
 var github = __toESM(require_github());
 
-// src/useInfo.ts
-function getName(userLogin) {
-  return fetch(`https://api.github.com/users/${userLogin}`).then(async (response) => {
-    if (!response.ok) {
-      throw new Error(`Erro: ${response.status} ${response.statusText}`);
-    }
-    const data = await response.json();
-    return data.name;
-  }).catch((error) => {
-    return error;
-  });
-}
-
 // node_modules/marked/lib/marked.esm.js
 function M() {
   return { async: false, breaks: false, extensions: null, gfm: true, hooks: null, pedantic: false, renderer: null, silent: false, tokenizer: null, walkTokens: null };
@@ -25016,23 +25003,58 @@ var Nt = k.parseInline;
 var Ft = T.parse;
 var Qt = b.lex;
 
+// src/useInfo.ts
+function getName(userLogin) {
+  return fetch(`https://api.github.com/users/${userLogin}`).then(async (response) => {
+    if (!response.ok) {
+      throw new Error(`Erro: ${response.status} ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data.name;
+  }).catch((error) => {
+    return error;
+  });
+}
+
+// src/mondayComment.ts
+async function generateMondayComment(pullRequest) {
+  const userName = await getName(pullRequest.user.login);
+  const mondayComment = pullRequest.body.split("Start Monday Comment").pop()?.split("End Monday Comment")[0].trim();
+  if (!mondayComment) {
+    return null;
+  }
+  return `Coment\xE1rio criado por: 
+  <strong>${userName}</strong> a partir de um 
+  <a href="${pullRequest.html_url}" target="_blank" rel="noopener noreferrer">Pull Request</a> 
+  via API
+  
+
+${k(mondayComment)}`;
+}
+
 // src/index.ts
 var apiKey = core.getInput("apiKey");
 var payload = JSON.stringify(github.context.payload, void 0, 2);
 var objPayload = JSON.parse(payload);
 var pull_request = objPayload.pull_request;
-var mondayURl = pull_request.body.split("Link da tarefa no Monday:[").pop().split("](").pop().split(")")[0];
-var match = mondayURl.match(/\/pulses\/(\d+)/);
-var activityId = match ? match[1] : "";
-var mondayComment = pull_request.body.split("Start Monday Comment").pop().split("End Monday Comment")[0].trim();
 async function run() {
   try {
-    const userName = await getName(pull_request.user.login);
-    const content = `Coment\xE1rio criado por: <strong>${userName}</strong> a partir de um <a href="${pull_request.html_url}" target="_blank" rel="noopener noreferrer noopener noreferrer">Pull Request</a> via API
-
-${k(
-      mondayComment
-    )}`;
+    if (!pull_request.body) {
+      core.info("Sem body no pull-request");
+      return;
+    }
+    const mondayURl = pull_request.body.split("Link da tarefa no Monday:[").pop().split("](").pop().split(")")[0];
+    const match = mondayURl.match(/\/pulses\/(\d+)/);
+    const activityId = match ? match[1] : "";
+    if (!activityId) {
+      core.info("Sem id da board do Monday para enviar");
+      return;
+    }
+    const content = await generateMondayComment(pull_request);
+    if (!content) {
+      core.info("Sem coment\xE1rio para enviar ao Monday");
+      return;
+    }
     const mutation = `
       mutation($itemId: ID!, $body: String!) {
         create_update(item_id: $itemId, body: $body) {
